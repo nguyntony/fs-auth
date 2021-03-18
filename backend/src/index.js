@@ -1,5 +1,6 @@
 const express = require("express");
 const helmet = require("helmet");
+const { userController } = require("./db/controllers");
 
 const port = 4000;
 
@@ -18,15 +19,7 @@ app.get("/register", (req, res) => {
   res.send("gimme your info");
 });
 
-app.post("/register", (req, res) => {
-  const { name, email, password } = req.body;
-  console.log(name, email, password);
-  res.json({
-    name,
-    email,
-    password,
-  });
-});
+app.post("/register", userController.processSignUp);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
