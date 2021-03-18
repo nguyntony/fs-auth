@@ -15,11 +15,17 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+// register
 app.get("/register", (req, res) => {
-  res.send("gimme your info");
+  res.send("gimme your info to signup!");
 });
-
 app.post("/register", userController.processSignUp);
+
+// login
+app.get("/login", (req, res) => {
+  res.send("so you wanna login?");
+});
+app.post("/login", userController.processLogin);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
