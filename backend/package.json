@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/index.js",
-    "authServer": "nodemon src/authSever.js",
     "build-db": "node src/db/migrate.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
