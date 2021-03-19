@@ -1,6 +1,5 @@
 require("dotenv").config();
 const express = require("express");
-const jwt = require("express-jwt");
 const helmet = require("helmet");
 const { userController } = require("./db/controllers");
 
@@ -12,14 +11,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
-// setting up jwt middleware fn
-app.use(
-  jwt({
-    secret: process.env.RANDOM_BYTES,
-    algorithms: ["HS256"],
-    credentialsRequired: false,
-  })
-);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
@@ -36,6 +27,21 @@ app.get("/login", (req, res) => {
   res.send("so you wanna login?");
 });
 app.post("/login", userController.processLogin);
+
+// authenicating?
+const posts = [
+  {
+    username: "testing",
+    message: `you're name is testing`,
+  },
+  {
+    username: "not testing",
+    message: `you're name is not testing`,
+  },
+];
+app.get("/posts", userController.authenticateToken, (req, res) => {
+  res.json(posts.filter((p) => p.username === req.user.name));
+});
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

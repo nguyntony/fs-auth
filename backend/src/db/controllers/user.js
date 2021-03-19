@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 const { User } = require("../models");
 
 const processSignUp = async (req, res) => {
@@ -37,26 +38,54 @@ const processSignUp = async (req, res) => {
 
 const processLogin = async (req, res) => {
   let { email, password } = req.body;
-  const user = await User.findOne({
+  const findUser = await User.findOne({
     where: {
       email,
     },
   });
-  // this returns a boolean depending on password match or not.
-  const passwordCheck = bcrypt.compareSync(password, user.password);
+  if (findUser) {
+    const passwordCheck = bcrypt.compareSync(password, findUser.password);
+    const user = { name: findUser.name, email: findUser.email };
 
-  if (user && passwordCheck) {
-    res.json({
-      message: "successful login",
-    });
+    if (passwordCheck) {
+      const accessToken = generateAccessToken(user);
+      // const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+      res.json({
+        message: "successful login",
+        accessToken,
+        refreshToken,
+      });
+    } else {
+      res.json({
+        message: "unsuccessful login",
+      });
+    }
   } else {
     res.json({
-      message: "unsuccessful login",
+      message: "no user found",
     });
   }
+};
+
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token === null) return res.sendStatus(401);
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+};
+
+const generateAccessToken = (user) => {
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "1d" });
 };
 
 module.exports = {
   processSignUp,
   processLogin,
+  authenticateToken,
+  generateAccessToken,
 };
