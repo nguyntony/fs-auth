@@ -1,5 +1,7 @@
+require("dotenv").config();
 const express = require("express");
 const helmet = require("helmet");
+const { userController } = require("./db/controllers");
 
 const port = 4000;
 
@@ -14,18 +16,31 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+// register
 app.get("/register", (req, res) => {
-  res.send("gimme your info");
+  res.send("gimme your info to signup!");
 });
+app.post("/register", userController.processSignUp);
 
-app.post("/register", (req, res) => {
-  const { name, email, password } = req.body;
-  console.log(name, email, password);
-  res.json({
-    name,
-    email,
-    password,
-  });
+// login
+app.get("/login", (req, res) => {
+  res.send("so you wanna login?");
+});
+app.post("/login", userController.processLogin);
+
+// authenicating?
+const posts = [
+  {
+    username: "testing",
+    message: `you're name is testing`,
+  },
+  {
+    username: "not testing",
+    message: `you're name is not testing`,
+  },
+];
+app.get("/posts", userController.authenticateToken, (req, res) => {
+  res.json(posts.filter((p) => p.username === req.user.name));
 });
 
 app.listen(port, () => {
