@@ -47,8 +47,13 @@ const signupValidation = async (req, res, next) => {
       email,
     },
   });
-  try {
-  } catch (err) {}
+  if (findUser) {
+    next();
+  } else {
+    res.json({
+      messsage: "Email already in use.",
+    });
+  }
 };
 
 const processLogin = async (req, res) => {
@@ -103,4 +108,5 @@ module.exports = {
   processLogin,
   authenticateToken,
   generateAccessToken,
+  signupValidation,
 };

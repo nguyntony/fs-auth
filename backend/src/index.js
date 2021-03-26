@@ -20,7 +20,11 @@ app.get("/", (req, res) => {
 app.get("/register", (req, res) => {
   res.send("gimme your info to signup!");
 });
-app.post("/register", userController.processSignUp);
+app.post(
+  "/register",
+  userController.signupValidation,
+  userController.processSignUp
+);
 
 // login
 app.get("/login", (req, res) => {
