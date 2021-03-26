@@ -23,6 +23,9 @@ const processSignUp = async (req, res) => {
       email,
       password: hash,
     });
+    res.json({
+      message: "successful signup",
+    });
   } else {
     res.json({
       error: "This email is already in use.",
@@ -34,6 +37,18 @@ const processSignUp = async (req, res) => {
     email,
     hash,
   });
+};
+
+// create a middleware fn that will validate the req.body that is coming in.
+const signupValidation = async (req, res, next) => {
+  const { email } = req.body;
+  const findUser = await User.findOne({
+    where: {
+      email,
+    },
+  });
+  try {
+  } catch (err) {}
 };
 
 const processLogin = async (req, res) => {

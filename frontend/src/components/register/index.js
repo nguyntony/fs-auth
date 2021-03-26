@@ -17,6 +17,7 @@ export default function Register() {
 
   const onSubmit = (data) => {
     // const resp = await axios.post("/register");
+    // tomorrow I need to connect this with the backend to check for the email and ensure that it is unique
     setValidated(true);
     console.log(data);
   };
